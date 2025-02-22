@@ -1,0 +1,20 @@
+[
+  {
+    "title": "Ritesh",
+    "subtitle": "date.past",
+    "image": "assets/images/bg3.jpg",
+    "username": "Ritesh"
+  },
+  {
+    "title": "Anime Enthusiast",
+    "subtitle": "yesterday",
+    "image": "assets/images/bg3.jpg",
+    "username": "Anime Fan"
+  },
+  {
+    "title": "Tech Blogger",
+    "subtitle": "today",
+    "image": "assets/images/bg3.jpg",
+    "username": "Tech Blogger"
+  }
+]

@@ -1,0 +1,10 @@
+
+
+{
+  "profileImage": "assets/profile/profile1.jpeg",
+  "name": "Rajesh Kumar",
+  "location": "New Delhi, India",
+  "email": "rajeshkumar@gmail.com",
+  "status": "Online",
+  "languages": ["English", "Hindi"]
+}

@@ -1,0 +1,66 @@
+[
+  {
+    "icon": "miscellaneous_services",
+    "title": "Arbitration",
+    "screen": "ArbitrationScreen"
+  },
+  {
+    "icon": "miscellaneous_services",
+    "title": "Mediation",
+    "screen": "Mediation"
+  },
+  {
+    "icon": "miscellaneous_services",
+    "title": "Notary",
+    "screen": "NotaryScreen"
+  },
+  {
+    "icon": "miscellaneous_services",
+    "title": "Legal Notice",
+    "screen": "LegalNotice"
+  },
+  {
+    "icon": "miscellaneous_services",
+    "title": "Drafting",
+    "screen": "Drafting"
+  },
+ 
+  {
+    "icon": "miscellaneous_services",
+    "title": "Legal Representation",
+    "screen": "LegalRepresentation"
+  },
+  {
+    "icon": "miscellaneous_services",
+    "title": "Legal Document Review",
+    "screen": "LegalDocumentReview"
+  },
+  {
+    "icon": "miscellaneous_services",
+    "title": "Legal Case Filing",
+    "screen": "LegalCaseFiling"
+  },
+  
+  {
+    "icon": "miscellaneous_services",
+    "title": "Legal Document Verification",
+    "screen": "LegalDocumentVerification"
+  },
+  {
+    "icon": "miscellaneous_services",
+    "title": "Legal Document Registration",
+    "screen": "LegalDocumentRegistration"
+  },
+  {
+    "icon": "miscellaneous_services",
+    "title": "Legal Document Attestation",
+    "screen": "LegalDocumentAttestation"
+  },
+  {
+    "icon": "miscellaneous_services",
+    "title": "Legal Document Certification",
+    "screen": "LegalDocumentCertification"
+  }
+ 
+
+]

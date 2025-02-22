@@ -1,0 +1,16 @@
+[
+  {
+    "title": {
+      "en": "Arbitration",
+      "hi": "मध्यस्थता"
+    },
+    "screen": "ArbitrationScreen"
+  },
+  {
+    "title": {
+      "en": "Mediation",
+      "hi": "मीडिया"
+    },
+    "screen": "Mediation"
+  }
+]

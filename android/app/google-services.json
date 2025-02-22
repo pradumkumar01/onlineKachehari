@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "177558703315",
+    "project_id": "online-kachaheri-3743c",
+    "storage_bucket": "online-kachaheri-3743c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:177558703315:android:6a8fb84c59504429d09826",
+        "android_client_info": {
+          "package_name": "com.example.online_kachaheri"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBE_XtRxjElxfGcxbk33ZBEnUX2ozGWrjE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
