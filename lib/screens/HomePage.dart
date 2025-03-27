@@ -1,18 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_online_kachehari/components/HomePage/LiveAdvoates.dart';
-import 'package:flutter_online_kachehari/components/HomePage/OtherServices.dart';
-import 'package:flutter_online_kachehari/components/HomePage/SocialMediaIcons.dart';
-import 'package:flutter_online_kachehari/components/HomePage/TopAdvocates.dart';
+import 'package:flutter_online_kachehari/features/Customer/components/HomePage/LiveAdvoates.dart';
+import 'package:flutter_online_kachehari/features/Customer/components/HomePage/OurServices.dart';
+import 'package:flutter_online_kachehari/features/Customer/components/HomePage/SocialMediaIcons.dart';
+import 'package:flutter_online_kachehari/features/Customer/components/HomePage/TopAdvocates.dart';
 
-import 'package:flutter_online_kachehari/components/HomePage/TopLegalTrends.dart';
-import 'package:flutter_online_kachehari/components/LiveAdvoactes/LiveWakeels.dart';
-import 'package:flutter_online_kachehari/components/TopAdvocate/TopAdvocate.dart';
+import 'package:flutter_online_kachehari/features/Customer/components/HomePage/TopLegalTrends.dart';
+import 'package:flutter_online_kachehari/features/Customer/components/LiveAdvoactes/LiveWakeels.dart';
+import 'package:flutter_online_kachehari/features/Customer/components/TopAdvocate/TopAdvocate.dart';
 
-import 'package:flutter_online_kachehari/components/TopLegalTrends/TopLegal.dart';
-import 'package:flutter_online_kachehari/components/HomePage/BottomNaviagtion.dart';
-import 'package:flutter_online_kachehari/components/HomePage/DrawerHomePage.dart';
+import 'package:flutter_online_kachehari/features/Customer/components/TopLegalTrends/TopLegal.dart';
+import 'package:flutter_online_kachehari/features/Customer/components/HomePage/BottomNaviagtion.dart';
+import 'package:flutter_online_kachehari/features/Customer/components/HomePage/DrawerHomePage.dart';
 import 'package:flutter_online_kachehari/provider/theme.dart';
 
 import 'package:flutter_online_kachehari/screens/Notification.dart';
@@ -75,9 +75,21 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepPurple, // Matching app bar color
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 60, 4, 213),
+                Color.fromRGBO(37, 6, 105, 1),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
         title: Stack(
           children: [
-            Text(translate('Online Kachehari', 'ऑनलाइन कचहरी'),
+            Text(translate('Online Kachaheri', 'ऑनलाइन कचहरी'),
                 style: const TextStyle(
                     fontSize: 20,
                     color: Colors.white,
@@ -154,6 +166,8 @@ class _HomePageState extends State<HomePage> {
             )
         ],
       ),
+      //Drawer of the page
+
       drawer: const DrawerHomePage(),
       body: Container(
         color: themeData.isDarkMode ? Colors.black : Colors.white,
@@ -197,7 +211,7 @@ class _HomePageState extends State<HomePage> {
                     );
                   },
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
 
                 // Top Trending Section
                 Row(
@@ -228,7 +242,7 @@ class _HomePageState extends State<HomePage> {
                 const TopLegalTrends(),
 
                 // Top Advocates
-                const SizedBox(height: 2),
+                const SizedBox(height: 0),
                 Row(
                   children: [
                     Text(
@@ -259,9 +273,11 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
                 const TopAdvocates(),
-
+                SizedBox(
+                  height: 20,
+                ),
                 // Vakil Logo Section
-                Text(translate('Vakil Logo', 'वकील लोगो'),
+                Text(translate(' Banner', 'वकील लोगो'),
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -280,14 +296,14 @@ class _HomePageState extends State<HomePage> {
                       width: 450,
                       decoration: const BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage('assets/images/vakil.jpg'),
+                          image: AssetImage('assets/images/online.png'),
                           fit: BoxFit.cover,
                         ),
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
 
                 // Live Advocate Section
                 Row(
@@ -317,7 +333,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 const SizedBox(height: 10),
                 const LiveAdvocates(),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
 
                 // Other Services Section with Cards
                 Text(translate('Our Services', 'अन्य सेवाएं'),
@@ -329,7 +345,7 @@ class _HomePageState extends State<HomePage> {
                           : Colors.black,
                     )),
                 const SizedBox(height: 10),
-                const OtherServices(),
+                const OurServices(),
 
                 const SizedBox(height: 20),
 

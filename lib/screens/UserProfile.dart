@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_online_kachehari/provider/theme.dart';
-import 'package:flutter_online_kachehari/screens/AdvocateProfile.dart';
+import 'package:flutter_online_kachehari/features/Advocate/AdvocateRegistration.dart';
+import 'package:flutter_online_kachehari/features/Advocate/advocate_profile/AdvocateProfile.dart';
 import 'package:flutter_online_kachehari/services/auth_service.dart';
 import 'package:flutter_online_kachehari/screens/LoginScreen.dart';
 import 'package:flutter_online_kachehari/screens/Settings.dart';
@@ -57,6 +58,18 @@ class _UserProfileState extends State<UserProfile> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 60, 4, 213),
+                Color.fromRGBO(37, 6, 105, 1),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();
@@ -88,7 +101,14 @@ class _UserProfileState extends State<UserProfile> {
                       Container(
                         padding: const EdgeInsets.all(20),
                         decoration: BoxDecoration(
-                          color: Colors.deepPurple,
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color.fromARGB(255, 60, 4, 213),
+                              Color.fromRGBO(37, 6, 105, 1)
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Column(
@@ -181,10 +201,7 @@ class _UserProfileState extends State<UserProfile> {
                           color: Colors.blue,
                           title: 'User Type',
                           subtitle: usertype ? 'CUSTOMER' : 'ADVOCATE',
-                          onTap: () {}
-                          // Implement user type change functionality
-
-                          ),
+                          onTap: () {}),
                       const SizedBox(height: 20),
                       const SectionHeader(title: 'Preferences'),
                       ProfileItem(
@@ -195,6 +212,15 @@ class _UserProfileState extends State<UserProfile> {
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => SettingsPage()));
+                        },
+                      ),
+                      ProfileItem(
+                        icon: Icons.language,
+                        color: Colors.orange,
+                        title: 'Language',
+                        subtitle: 'English, Hindi',
+                        onTap: () {
+                          // Handle language change
                         },
                       ),
                       const SizedBox(height: 20),

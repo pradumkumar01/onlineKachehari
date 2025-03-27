@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_online_kachehari/LoginScreen/OnlineKachehariWelcome.dart';
+import 'package:flutter_online_kachehari/screens/OnlineKachehariWelcome.dart';
 import 'package:flutter_online_kachehari/screens/HomePage.dart';
 import 'package:flutter_online_kachehari/screens/LoginScreen.dart';
 
@@ -30,7 +30,7 @@ class Wrapper extends StatelessWidget {
 
           // If user is not logged in (null), show LoginScreen
           if (snapshot.data == null) {
-            return const OnlineKachehariLoginScreen();
+            return const OnlineKachehariWelcomScreen();
           }
 
           // If user is logged in, show HomePage

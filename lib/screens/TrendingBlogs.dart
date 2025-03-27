@@ -100,6 +100,18 @@ class _TrendingBlogsState extends State<TrendingBlogs> {
     var themeData = Provider.of<ThemeProviderState>(context);
     return Scaffold(
       appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 60, 4, 213),
+                Color.fromRGBO(37, 6, 105, 1),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
@@ -117,9 +129,6 @@ class _TrendingBlogsState extends State<TrendingBlogs> {
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
-        ),
-        flexibleSpace: Container(
-          color: Colors.deepPurple,
         ),
       ),
       body: Container(

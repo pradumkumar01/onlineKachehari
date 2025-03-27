@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_online_kachehari/screens/AdvocateProfile.dart';
+// import 'package:flutter_online_kachehari/provider/UserTypeProvider.dart';
+import 'package:flutter_online_kachehari/features/Advocate/AdvocateRegistration.dart';
 import 'package:flutter_online_kachehari/screens/ForgotScreen.dart';
 import 'package:flutter_online_kachehari/screens/HomePage.dart';
 import 'package:flutter_online_kachehari/screens/SignUpScreen.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_online_kachehari/services/auth_service.dart';
 import 'package:flutter_online_kachehari/services/notification_service.dart';
 import 'package:flutter_online_kachehari/toaster/toast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
 // import 'WaveClipper.dart'; // Make sure this references your WaveClipper code
 
@@ -93,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 8),
                       const Text(
-                        'Online Kachehari',
+                        'Online Kachaheri',
                         style: TextStyle(
                           fontSize: 26,
                           color: Colors.white,
@@ -128,6 +130,26 @@ class _LoginScreenState extends State<LoginScreen> {
                   ShaderMask(
                     shaderCallback: (bounds) => const LinearGradient(
                       colors: [
+                        Color.fromARGB(255, 196, 4, 213),
+                        Color.fromARGB(193, 105, 6, 67),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ).createShader(bounds),
+                    child: const Text(
+                      'User Login !',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors
+                            .white, // This color will be masked by the gradient
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  ShaderMask(
+                    shaderCallback: (bounds) => const LinearGradient(
+                      colors: [
                         Color.fromARGB(255, 60, 4, 213),
                         Color.fromARGB(255, 37, 6, 105),
                       ],
@@ -137,14 +159,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: const Text(
                       'Welcome Back !',
                       style: TextStyle(
-                        fontSize: 24,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: Colors
                             .white, // This color will be masked by the gradient
                       ),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
 
                   // Username field
                   _buildTextField(
@@ -197,7 +219,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ],
                   ),
 
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 10),
 
                   // Login button
                   SizedBox(
@@ -219,7 +241,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           gradient: const LinearGradient(
                             colors: [
                               Color.fromARGB(255, 60, 4, 213),
-                              Color.fromARGB(255, 37, 6, 105)
+                              Color.fromRGBO(37, 6, 105, 1)
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -252,28 +274,32 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 0),
 
                   // "New user? Sign up"
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  Column(
                     children: [
-                      const Text(
-                        'New user? ',
-                        style: TextStyle(color: Colors.black87),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const SignupScreen(),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              'New user? ',
+                              style: TextStyle(color: Colors.black87),
                             ),
-                          );
-                        },
-                        child: const Text(
-                          'Sign Up',
-                          style: TextStyle(color: Color(0xFF7C4DFF)),
-                        ),
-                      ),
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => const SignupScreen(),
+                                  ),
+                                );
+                              },
+                              child: const Text(
+                                'Sign Up',
+                                style: TextStyle(color: Color(0xFF7C4DFF)),
+                              ),
+                            ),
+                          ]),
                     ],
                   ),
+
                   // OR text in between line
                   Row(
                     children: [
@@ -362,6 +388,33 @@ class _LoginScreenState extends State<LoginScreen> {
                   //     ),
                   //   ],
                   // ),
+                  // Row(
+                  //   children: [
+                  //     Expanded(
+                  //       child: Divider(
+                  //         color: Color.fromARGB(255, 60, 4, 213),
+                  //         thickness: 1,
+                  //       ),
+                  //     ),
+                  //     Padding(
+                  //       padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  //       child: Text(
+                  //         'OR',
+                  //         style: TextStyle(
+                  //           color: Colors.grey[600],
+                  //           fontWeight: FontWeight.bold,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     Expanded(
+                  //       child: Divider(
+                  //         color: Color.fromARGB(255, 60, 4, 213),
+                  //         thickness: 1,
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  //
                 ],
               ),
             ),
@@ -470,6 +523,9 @@ class _LoginScreenState extends State<LoginScreen> {
             body: "Welcome back, $username!",
             date: dateNow.toIso8601String(),
           );
+
+          // var userType = Provider.of<UserTypeProvider>(context);
+          // userType.userType;
 
           // Navigate to HomePage
           Navigator.of(context).pushReplacement(

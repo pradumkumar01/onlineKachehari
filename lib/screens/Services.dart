@@ -54,6 +54,18 @@ class _ServicesPageState extends State<ServicesPage> {
     var themeData = Provider.of<ThemeProviderState>(context);
     return Scaffold(
       appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 60, 4, 213),
+                Color.fromRGBO(37, 6, 105, 1),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
@@ -66,7 +78,6 @@ class _ServicesPageState extends State<ServicesPage> {
                 color: Colors.white,
                 fontSize: 21,
                 fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.deepPurple,
         actions: [
           IconButton(
             icon: const Icon(
@@ -180,7 +191,7 @@ class ServiceCard extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
-                        color: Colors.deepPurple,
+                        color: Colors.blue,
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),

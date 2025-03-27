@@ -52,8 +52,8 @@ class _SplashScreenState extends State<SplashScreen>
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              Colors.deepPurple,
-              Colors.deepPurple,
+              Color.fromARGB(255, 60, 4, 213),
+              Color.fromRGBO(37, 6, 105, 1),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -73,7 +73,7 @@ class _SplashScreenState extends State<SplashScreen>
             ),
             const SizedBox(height: 16),
             const Text(
-              'Online Kachehari',
+              'Online Kachaheri',
               style: TextStyle(
                 fontSize: 30,
                 color: Colors.white,
@@ -105,12 +105,10 @@ class _SplashScreenState extends State<SplashScreen>
                 width: 50,
                 height: 50,
                 child: CircularProgressIndicator(
-                  valueColor: _controller.drive(
-                    ColorTween(
-                      begin: Colors.blue,
-                      end: Colors.deepPurpleAccent,
-                    ),
-                  ),
+                  valueColor: ColorTween(
+                    begin: Colors.blue,
+                    end: Colors.deepPurpleAccent,
+                  ).animate(_controller),
                 ),
               ),
             ),

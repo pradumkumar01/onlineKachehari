@@ -11,6 +11,18 @@ class AboutUsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 60, 4, 213),
+                Color.fromRGBO(37, 6, 105, 1),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
         leading: IconButton(
             onPressed: () => Navigator.pop(context),
             icon: const Icon(
@@ -31,7 +43,10 @@ class AboutUsScreen extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.deepPurple, Colors.deepPurple],
+                  colors: [
+                    Color.fromARGB(255, 60, 4, 213),
+                    Color.fromRGBO(37, 6, 105, 1),
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -41,7 +56,7 @@ class AboutUsScreen extends StatelessWidget {
                   Image.asset('assets/images/logo.png', height: 150),
                   const SizedBox(height: 10),
                   const Text(
-                    'Online Kachehari',
+                    'Online Kachahari',
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -105,16 +120,17 @@ class AboutUsScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
-                        color: Colors.deepPurpleAccent,
+                        color: Color.fromARGB(255, 27, 18, 189),
                       ),
                     ),
                     const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.phone, color: Colors.deepPurpleAccent),
+                        const Icon(Icons.phone,
+                            color: Color.fromARGB(255, 41, 19, 164)),
                         const SizedBox(width: 10),
-                        Text('+91 123 456 7890',
+                        Text('+91 8112927005',
                             style: TextStyle(
                                 fontSize: 16,
                                 color: themeData.isDarkMode
@@ -125,9 +141,10 @@ class AboutUsScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.email, color: Colors.deepPurpleAccent),
+                        Icon(Icons.email,
+                            color: const Color.fromARGB(255, 16, 19, 198)),
                         SizedBox(width: 10),
-                        Text('support@onlinekachehari.com',
+                        Text('casematsolutionsprivatelimited@gmail.com',
                             style: TextStyle(
                                 fontSize: 16,
                                 color: themeData.isDarkMode
@@ -157,7 +174,7 @@ class AboutUsScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Row(
           children: [
-            Icon(icon, size: 40, color: Colors.deepPurpleAccent),
+            Icon(icon, size: 40, color: const Color.fromARGB(255, 14, 23, 196)),
             const SizedBox(width: 20),
             Expanded(
               child: Column(

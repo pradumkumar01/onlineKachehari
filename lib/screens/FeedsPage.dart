@@ -1,335 +1,178 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:flutter_online_kachehari/screens/UserProfile.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:flutter_online_kachehari/screens/HomePage.dart';
-import 'package:flutter_online_kachehari/screens/Notification.dart';
-
-// void main() => runApp(const FeedsPage());
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class FeedsPage extends StatefulWidget {
-  const FeedsPage({super.key});
-
   @override
   _FeedsPageState createState() => _FeedsPageState();
 }
 
 class _FeedsPageState extends State<FeedsPage> {
-  String currentUserName = "John Doe";
-  List<Map<String, String>> data = [];
-
-  File? _image;
-  final picker = ImagePicker();
-  TextEditingController titleController = TextEditingController();
-  TextEditingController subtitleController = TextEditingController();
+  List articles = [];
+  bool isLoading = true;
+  bool hasMore = true;
+  bool hasError = false;
+  String errorMessage = '';
+  int page = 1;
+  final String apiKey =
+      "6a8cd98a579946128b490e86537c754f"; // Replace with your actual API Key
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
-    _loadData();
+    fetchLawTrends();
+    _scrollController.addListener(_scrollListener);
   }
 
-  Future<void> _loadData() async {
-    final String jsonString =
-        await rootBundle.loadString('assets/json/feedData.json');
-    final List<dynamic> jsonData = json.decode(jsonString);
+  Future<void> fetchLawTrends() async {
+    if (!hasMore || isLoading) return;
+
     setState(() {
-      data = jsonData.map((item) => Map<String, String>.from(item)).toList();
+      isLoading = true;
+      hasError = false;
+      errorMessage = '';
     });
-  }
 
-  Future<void> _pickImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
+    try {
+      final response = await http.get(Uri.parse(
+          "https://newsapi.org/v2/everything?q=law+trends&pageSize=5&page=$page&apiKey=$apiKey"));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data["articles"].isEmpty) {
+          setState(() {
+            hasMore = false;
+          });
+        } else {
+          setState(() {
+            articles.addAll(data["articles"]);
+            page++;
+          });
+        }
+      } else {
+        throw Exception("Failed to load data");
+      }
+    } catch (e) {
       setState(() {
-        _image = File(pickedFile.path);
+        hasError = true;
+        errorMessage = e.toString();
+      });
+      print("Error fetching data: $e");
+    } finally {
+      setState(() {
+        isLoading = false;
       });
     }
   }
 
-  void _addNewPost() {
-    if (titleController.text.isNotEmpty || subtitleController.text.isNotEmpty) {
-      setState(() {
-        data.insert(0, {
-          "title": titleController.text,
-          "subtitle": subtitleController.text,
-          "image": _image?.path ?? "assets/images/bg3.jpg",
-          "username": currentUserName,
-        });
-      });
-      titleController.clear();
-      subtitleController.clear();
-      _image = null;
+  void _scrollListener() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      fetchLawTrends();
     }
   }
-
-  void _deletePost(int index) {
-    setState(() {
-      data.removeAt(index);
-    });
-  }
-
-  void _handleBackPress() {
-    Navigator.pop(context);
-  }
-
-  int _selectedIndex = 1;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.deepPurple,
-        title: const Text(
-          "Feeds",
-          style: TextStyle(color: Colors.white),
-        ),
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back,
             color: Colors.white,
           ),
-          onPressed: _handleBackPress,
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
         ),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Container(
-              padding: const EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(20),
-                color: Colors.white,
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      const CircleAvatar(
-                        radius: 25,
-                        backgroundImage: AssetImage("assets/images/f_img.jpeg"),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade200,
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: TextField(
-                            controller: subtitleController,
-                            decoration: const InputDecoration(
-                              hintText: "Write your thoughts...",
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildPostButton(Icons.photo, "Media", Colors.blue),
-                      ElevatedButton(
-                        onPressed: _addNewPost,
-                        child: const Text("Post"),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+        backgroundColor: Colors.deepPurple,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 60, 4, 213),
+                Color.fromRGBO(37, 6, 105, 1),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
           ),
-          Expanded(
-            child: ListView.separated(
-              itemCount: data.length,
-              separatorBuilder: (context, index) => Divider(
-                color: Colors.grey[300],
-                thickness: 1.0,
-              ),
-              itemBuilder: (context, index) {
-                final item = data[index];
-                return Card(
-                  elevation: 10,
-                  color: Colors.transparent.withOpacity(0.9),
-                  child: Container(
-                    height: 350,
-                    color: Colors.white,
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          color: Colors.deepPurple,
-                          child: ListTile(
-                            leading: const CircleAvatar(
-                              backgroundImage:
-                                  AssetImage("assets/images/bg3.jpg"),
-                            ),
-                            title: Text(item["username"] ?? "",
-                                style: const TextStyle(color: Colors.white)),
-                            subtitle: Text(item["subtitle"] ?? "",
-                                style: const TextStyle(color: Colors.white)),
-                            trailing: PopupMenuButton<String>(
-                              icon: const Icon(Icons.more_vert,
-                                  color: Colors.white),
-                              onSelected: (value) {
-                                if (value == "Delete") {
-                                  _deletePost(index);
-                                }
-                              },
-                              itemBuilder: (context) => [
-                                const PopupMenuItem(
-                                  height: 30,
-                                  value: "Delete",
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.delete,
-                                        color: Colors.red,
-                                      ),
-                                      SizedBox(width: 8),
-                                      Text("Delete",
-                                          style: TextStyle(color: Colors.red)),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: item["image"] != null &&
-                                        File(item["image"]!).existsSync()
-                                    ? FileImage(File(item["image"]!))
-                                    : const AssetImage('assets/images/bg4.jpg')
-                                        as ImageProvider,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                          color: Colors.deepPurple,
-                          padding: const EdgeInsets.symmetric(vertical: 10.0),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Row(
-                                children: <Widget>[
-                                  Icon(Icons.thumb_up, color: Colors.white),
-                                  SizedBox(width: 8),
-                                  Text("Like",
-                                      style: TextStyle(color: Colors.white)),
-                                ],
-                              ),
-                              Row(
-                                children: <Widget>[
-                                  Icon(Icons.comment, color: Colors.white),
-                                  SizedBox(width: 8),
-                                  Text("Comments",
-                                      style: TextStyle(color: Colors.white)),
-                                ],
-                              ),
-                              Row(
-                                children: <Widget>[
-                                  Icon(Icons.share, color: Colors.white),
-                                  SizedBox(width: 8),
-                                  Text("Share",
-                                      style: TextStyle(color: Colors.white)),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
+        ),
+        title: Text(
+          "Latest Law Trends 2025",
+          style: TextStyle(color: Colors.white, fontSize: 20),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.refresh,
+              color: Colors.white,
             ),
-          ),
+            onPressed: () {
+              setState(() {
+                isLoading = true;
+                articles.clear();
+                page = 1;
+                hasMore = true;
+                hasError = false;
+                errorMessage = '';
+              });
+              fetchLawTrends();
+            },
+          )
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white.withOpacity(0.8),
-        selectedItemColor: Colors.deepPurple,
-        unselectedItemColor: Colors.grey,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.feed),
-            label: 'Feeds',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: 'Notifications',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
+      body: isLoading && articles.isEmpty
+          ? Center(child: CircularProgressIndicator())
+          : hasError
+              ? Center(child: Text("Error: $errorMessage"))
+              : RefreshIndicator(
+                  onRefresh: () async {
+                    setState(() {
+                      isLoading = true;
+                      articles.clear();
+                      page = 1;
+                      hasMore = true;
+                      hasError = false;
+                      errorMessage = '';
+                    });
+                    await fetchLawTrends();
+                  },
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    padding: EdgeInsets.all(10),
+                    itemCount: articles.length + (hasMore ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (index == articles.length) {
+                        return Center(child: CircularProgressIndicator());
+                      }
 
-          switch (index) {
-            case 0:
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => HomePage()),
-              );
-              break;
-            case 1:
-              // Do nothing as we are already on the Feeds page
-              break;
-            case 3:
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                    builder: (context) => const NotificationPage()),
-              );
-              break;
-            case 4:
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const UserProfile()),
-              );
-              break;
-          }
-        },
-      ),
-    );
-  }
-
-  Widget _buildPostButton(IconData icon, String label, Color color) {
-    return GestureDetector(
-      onTap: _pickImage,
-      child: Row(
-        children: [
-          Icon(icon, color: color),
-          const SizedBox(width: 5),
-          Text(
-            label,
-            style: TextStyle(color: Colors.grey[800], fontSize: 14),
-          ),
-        ],
-      ),
+                      final article = articles[index];
+                      return Card(
+                        elevation: 3,
+                        margin: EdgeInsets.symmetric(vertical: 8),
+                        child: ListTile(
+                          leading: article["urlToImage"] != null
+                              ? Image.network(article["urlToImage"],
+                                  fit: BoxFit.cover)
+                              : Icon(Icons.article,
+                                  size: 50, color: Colors.grey),
+                          title: Text(
+                            article["title"] ?? "No Title",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle:
+                              Text(article["description"] ?? "No Description"),
+                          trailing: Text(
+                            article["publishedAt"]?.substring(0, 10) ??
+                                "Unknown Date",
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
     );
   }
 }

@@ -90,7 +90,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           ),
                           const SizedBox(height: 16),
                           const Text(
-                            'आपका न्याय की ओर सफर यहीं से शुरू होता है\nRegister with Online Kachehari!',
+                            'आपका न्याय की ओर सफर यहीं से शुरू होता है\nRegister with Online Kachaheri!',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,

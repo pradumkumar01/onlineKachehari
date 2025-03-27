@@ -102,6 +102,18 @@ class _NotificationPageState extends State<NotificationPage> {
           ],
         ),
         backgroundColor: Colors.deepPurple,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Color.fromARGB(255, 60, 4, 213),
+                Color.fromRGBO(37, 6, 105, 1),
+              ],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -160,7 +172,7 @@ class _NotificationPageState extends State<NotificationPage> {
               break;
             case 1:
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const FeedsPage()));
+                  MaterialPageRoute(builder: (context) => FeedsPage()));
               break;
             case 3:
               Navigator.push(
