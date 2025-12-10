@@ -8,7 +8,7 @@ import 'package:flutter_online_kachehari/components/HomePage/TopAdvocates.dart';
 
 import 'package:flutter_online_kachehari/components/HomePage/TopLegalTrends.dart';
 import 'package:flutter_online_kachehari/components/LiveAdvoactes/LiveWakeels.dart';
-import 'package:flutter_online_kachehari/components/TopAdvocate/TopAdvocate.dart';
+import 'package:flutter_online_kachehari/components/TopAdvocate/TopAdvocates.dart';
 
 import 'package:flutter_online_kachehari/components/TopLegalTrends/TopLegal.dart';
 import 'package:flutter_online_kachehari/components/HomePage/BottomNaviagtion.dart';
@@ -244,22 +244,27 @@ class _HomePageState extends State<HomePage> {
                               : Colors.black,
                         )),
                     const Spacer(),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const TopAdvocate()));
-                      },
-                      child: Text(translate('View All', 'सभी देखें'),
-                          style: TextStyle(
-                            color: themeData.isDarkMode
-                                ? Colors.white
-                                : Colors.black,
-                          )),
-                    ),
+                    // TextButton(
+                    //   onPressed: () {
+                    //     Navigator.of(context).push(MaterialPageRoute(
+                    //         builder: (context) => const TopAdvocate()));
+                    //   },
+                    //   child: Text(translate('View All', 'सभी देखें'),
+                    //       style: TextStyle(
+                    //         color: themeData.isDarkMode
+                    //             ? Colors.white
+                    //             : Colors.black,
+                    //       )),
+                    // ),
                   ],
                 ),
-                const TopAdvocates(),
-
+                const SizedBox(
+                  height: 10,
+                ),
+                const SizedBox(height: 180, child: TopAdvocates()),
+                SizedBox(
+                  height: 20,
+                ),
                 // Vakil Logo Section
                 Text(translate('Vakil Logo', 'वकील लोगो'),
                     style: TextStyle(

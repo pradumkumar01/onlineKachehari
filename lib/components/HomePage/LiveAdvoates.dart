@@ -66,84 +66,91 @@ class _LiveAdvocatesState extends State<LiveAdvocates> {
               itemCount: liveAdvocates.length,
               separatorBuilder: (context, index) => const SizedBox(width: 10),
               itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        GestureDetector(
-                          onTap: () =>
-                              _onImageTap(liveAdvocates[index]['name']),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.red, width: 3),
-                            ),
-                            child: CircleAvatar(
-                              radius: 40,
-                              backgroundColor: Colors.green[0],
-                              child: ClipOval(
-                                child: Image.asset(
-                                  liveAdvocates[index]['image'],
-                                  fit: BoxFit.cover,
-                                  width: 75,
-                                  height: 75,
+                return Container(
+                  padding: EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(width: 1),
+                  ),
+                  child: Column(
+                    children: [
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: () =>
+                                _onImageTap(liveAdvocates[index]['name']),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.red, width: 3),
+                              ),
+                              child: CircleAvatar(
+                                radius: 40,
+                                backgroundColor: Colors.green[0],
+                                child: ClipOval(
+                                  child: Image.asset(
+                                    liveAdvocates[index]['image'],
+                                    fit: BoxFit.cover,
+                                    width: 75,
+                                    height: 75,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        Positioned(
-                          bottom: 4,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Container(
-                                width: 8,
-                                height: 8,
-                                decoration: const BoxDecoration(
-                                  color: Colors.red,
-                                  shape: BoxShape.circle,
+                          Positioned(
+                            bottom: 4,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 8,
+                                  height: 8,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.red,
+                                    shape: BoxShape.circle,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(width: 4),
-                              const BlinkingText(
-                                text: 'Live',
-                                style: TextStyle(
-                                  color: Colors.green,
-                                  fontWeight: FontWeight.w900,
+                                const SizedBox(width: 4),
+                                const BlinkingText(
+                                  text: 'Live',
+                                  style: TextStyle(
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.w900,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      liveAdvocates[index]['name'],
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: themeData.isDarkMode
-                            ? Colors.deepPurpleAccent
-                            : Colors.black,
+                        ],
                       ),
-                    ),
-                    SizedBox(
-                      width: 94,
-                      child: Text(
-                        liveAdvocates[index]['specialization'],
+                      const SizedBox(height: 5),
+                      Text(
+                        liveAdvocates[index]['name'],
                         style: TextStyle(
                           fontSize: 14,
-                          fontWeight: FontWeight.bold,
                           color: themeData.isDarkMode
-                              ? Colors.white
+                              ? Colors.deepPurpleAccent
                               : Colors.black,
                         ),
-                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                  ],
+                      SizedBox(
+                        width: 94,
+                        child: Text(
+                          liveAdvocates[index]['specialization'],
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: themeData.isDarkMode
+                                ? Colors.white
+                                : Colors.black,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
                 );
               },
             ),
