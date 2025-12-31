@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_online_kachehari/provider/lawyer_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_online_kachehari/provider/theme.dart';
-import 'package:flutter_online_kachehari/LoginScreen/OnlineKachehariWelcome.dart';
 import 'package:flutter_online_kachehari/screens/SplashScreen.dart';
 import 'package:flutter_online_kachehari/services/notification_service.dart';
-import 'package:flutter_online_kachehari/wrapper.dart';
 import 'package:provider/provider.dart';
 
 void main() async {

@@ -16,6 +16,7 @@ import 'package:flutter_online_kachehari/components/HomePage/DrawerHomePage.dart
 import 'package:flutter_online_kachehari/provider/theme.dart';
 
 import 'package:flutter_online_kachehari/screens/Notification.dart';
+import 'package:flutter_online_kachehari/screens/SearchScreen.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -60,13 +61,6 @@ class _HomePageState extends State<HomePage> {
   ];
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  // Method to toggle language
-  void _toggleLanguage() {
-    setState(() {
-      _isHindi = !_isHindi;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -163,39 +157,38 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Search bar with fake suggestions
-                Autocomplete<String>(
-                  optionsBuilder: (TextEditingValue textEditingValue) {
-                    if (textEditingValue.text.isEmpty) {
-                      return const Iterable<String>.empty();
-                    }
-                    return searchSuggestions.where((String suggestion) {
-                      return suggestion
-                          .contains(textEditingValue.text.toLowerCase());
-                    });
-                  },
-                  onSelected: (String selection) {
-                    print('You selected: $selection');
-                  },
-                  fieldViewBuilder:
-                      (context, controller, focusNode, onEditingComplete) {
-                    return TextField(
-                      controller: controller,
-                      focusNode: focusNode,
-                      decoration: InputDecoration(
-                        hintText: translate('Search...', 'खोजें...'),
-                        prefixIcon: const Icon(Icons.search),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: BorderSide.none,
-                        ),
-                        filled: true,
-                        fillColor: themeData.isDarkMode
-                            ? Colors.grey[400]
-                            : Colors.grey[200],
-                      ),
+                // Search bar - Navigate to SearchScreen on tap
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SearchScreen()),
                     );
                   },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
+                    decoration: BoxDecoration(
+                      color: themeData.isDarkMode
+                          ? Colors.grey[800]
+                          : Colors.grey[200],
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.search, color: Colors.grey),
+                        const SizedBox(width: 12),
+                        Text(
+                          translate('Search...', 'खोजें...'),
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 20),
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_online_kachehari/provider/theme.dart';
+import 'package:flutter_online_kachehari/screens/SearchScreen.dart';
 import 'package:provider/provider.dart';
 
 class ServicesPage extends StatefulWidget {
@@ -74,7 +75,10 @@ class _ServicesPageState extends State<ServicesPage> {
               color: Colors.white,
             ),
             onPressed: () {
-              // Implement search feature here
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SearchScreen()),
+              );
             },
           ),
         ],

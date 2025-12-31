@@ -20,7 +20,7 @@ dependencies:
   fluttertoast: 
   intl: 
   url_launcher:
-  flutter_webrtc: ^0.13.0 
+  flutter_webrtc: 
   device_preview: 
   firebase_core: 
   firebase_auth:

@@ -3,7 +3,7 @@ import 'package:flutter_online_kachehari/screens/FeedsPage.dart';
 import 'package:flutter_online_kachehari/screens/HomePage.dart';
 import 'package:flutter_online_kachehari/screens/Notification.dart';
 import 'package:flutter_online_kachehari/screens/UserProfile.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_online_kachehari/screens/SearchScreen.dart';
 
 class BottomNaviagtion extends StatefulWidget {
   // final Map<String, dynamic> lawyerData;
@@ -64,7 +64,9 @@ class _BottomNaviagtionState extends State<BottomNaviagtion> {
             );
             break;
           case 2:
-            // Add search functionality here
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const SearchScreen()),
+            );
             break;
           case 3:
             Navigator.of(context).push(

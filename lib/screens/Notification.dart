@@ -53,11 +53,11 @@ class _NotificationPageState extends State<NotificationPage> {
     fetchNotifications();
   }
 
-  /// Verify if user exists in Firestore (checks users collection)
+  /// Verify if user exists in Firestore (checks Users collection)
   Future<bool> _verifyUserExists(String userId) async {
     try {
-      // Check if user document exists in users collection
-      final userDoc = await _firestore.collection('users').doc(userId).get();
+      // Check if user document exists in Users collection (consistent naming)
+      final userDoc = await _firestore.collection('Users').doc(userId).get();
 
       if (userDoc.exists) {
         print("User verified: $userId");
@@ -68,7 +68,14 @@ class _NotificationPageState extends State<NotificationPage> {
       final authUser = _auth.currentUser;
       if (authUser != null && authUser.uid == userId) {
         print("User authenticated but no Firestore record for: $userId");
-        return false;
+        // Create user record if authenticated but missing
+        await _firestore.collection('Users').doc(userId).set({
+          'uid': userId,
+          'name': authUser.displayName ?? 'User',
+          'email': authUser.email ?? '',
+          'createdAt': FieldValue.serverTimestamp(),
+        });
+        return true;
       }
 
       return false;

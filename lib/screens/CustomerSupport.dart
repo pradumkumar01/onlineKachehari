@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_online_kachehari/provider/theme.dart';
 import 'package:flutter_online_kachehari/screens/AllTickets_customerSupport.dart';
+import 'package:flutter_online_kachehari/services/ticket_service.dart';
 import 'package:provider/provider.dart';
 
 class Customersupport extends StatefulWidget {
@@ -15,6 +16,13 @@ class _CustomersupportState extends State<Customersupport>
   // Animation controller for raising issue button
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
+
+  // Controllers for form fields
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _reasonController = TextEditingController();
+  final TextEditingController _messageController = TextEditingController();
+  final TicketService _ticketService = TicketService();
+  bool _isSubmitting = false;
 
   @override
   void initState() {
@@ -32,7 +40,74 @@ class _CustomersupportState extends State<Customersupport>
   @override
   void dispose() {
     _controller.dispose();
+    _titleController.dispose();
+    _reasonController.dispose();
+    _messageController.dispose();
     super.dispose();
+  }
+
+  Future<void> _submitTicket() async {
+    // Validate inputs
+    if (_titleController.text.trim().isEmpty) {
+      _showError('Please enter a title');
+      return;
+    }
+    if (_reasonController.text.trim().isEmpty) {
+      _showError('Please enter a reason');
+      return;
+    }
+    if (_messageController.text.trim().isEmpty) {
+      _showError('Please enter a message');
+      return;
+    }
+
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    try {
+      await _ticketService.createTicket(
+        title: _titleController.text.trim(),
+        reason: _reasonController.text.trim(),
+        message: _messageController.text.trim(),
+      );
+
+      // Clear form
+      _titleController.clear();
+      _reasonController.clear();
+      _messageController.clear();
+
+      // Show success message
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Ticket submitted successfully!'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+    } catch (e) {
+      _showError(e.toString().replaceAll('Exception: ', ''));
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
+    }
+  }
+
+  void _showError(String message) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
   }
 
   @override
@@ -137,13 +212,15 @@ class _CustomersupportState extends State<Customersupport>
                   ),
                   Column(
                     children: <Widget>[
-                      const Padding(
-                        padding: EdgeInsets.only(left: 21, right: 21),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 21, right: 21),
                         child: SizedBox(
                           width: 300,
                           child: TextField(
+                            controller: _titleController,
                             textAlign: TextAlign.center,
-                            decoration: InputDecoration(
+                            enabled: !_isSubmitting,
+                            decoration: const InputDecoration(
                               hintText: 'Title',
                               filled: true,
                               fillColor: Colors.white,
@@ -161,7 +238,7 @@ class _CustomersupportState extends State<Customersupport>
                                 fontFamily: 'serif',
                               ),
                             ),
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 16,
                                 color: Colors.black,
                                 fontFamily: 'serif'),
@@ -169,13 +246,15 @@ class _CustomersupportState extends State<Customersupport>
                         ),
                       ),
                       const SizedBox(height: 15),
-                      const Padding(
-                        padding: EdgeInsets.only(left: 21, right: 21),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 21, right: 21),
                         child: SizedBox(
                           width: 300,
                           child: TextField(
+                            controller: _reasonController,
                             textAlign: TextAlign.center,
-                            decoration: InputDecoration(
+                            enabled: !_isSubmitting,
+                            decoration: const InputDecoration(
                               hintText: 'Reason',
                               filled: true,
                               fillColor: Colors.white,
@@ -193,7 +272,7 @@ class _CustomersupportState extends State<Customersupport>
                                 fontFamily: 'serif',
                               ),
                             ),
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 16,
                                 color: Colors.black,
                                 fontFamily: 'serif'),
@@ -201,14 +280,16 @@ class _CustomersupportState extends State<Customersupport>
                         ),
                       ),
                       const SizedBox(height: 15),
-                      const Padding(
-                        padding: EdgeInsets.only(left: 21, right: 21),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 21, right: 21),
                         child: SizedBox(
                           width: 300,
                           child: TextField(
+                            controller: _messageController,
                             textAlign: TextAlign.center,
                             maxLines: 4,
-                            decoration: InputDecoration(
+                            enabled: !_isSubmitting,
+                            decoration: const InputDecoration(
                               hintText: 'Message',
                               filled: true,
                               fillColor: Colors.white,
@@ -226,7 +307,7 @@ class _CustomersupportState extends State<Customersupport>
                                 fontFamily: 'serif',
                               ),
                             ),
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 16,
                                 color: Colors.black,
                                 fontFamily: 'serif'),
@@ -237,11 +318,14 @@ class _CustomersupportState extends State<Customersupport>
                       ScaleTransition(
                         scale: _scaleAnimation,
                         child: ElevatedButton(
-                          onPressed: () {
-                            _controller.forward().then((_) {
-                              _controller.reverse();
-                            });
-                          },
+                          onPressed: _isSubmitting
+                              ? null
+                              : () {
+                                  _controller.forward().then((_) {
+                                    _controller.reverse();
+                                  });
+                                  _submitTicket();
+                                },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blue,
                             elevation: 5,
@@ -250,13 +334,22 @@ class _CustomersupportState extends State<Customersupport>
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30)),
                           ),
-                          child: const Text(
-                            "Raise issue ",
-                            style: TextStyle(
-                                fontFamily: "serif",
-                                fontSize: 21,
-                                color: Colors.white),
-                          ),
+                          child: _isSubmitting
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Text(
+                                  "Raise issue",
+                                  style: TextStyle(
+                                      fontFamily: "serif",
+                                      fontSize: 21,
+                                      color: Colors.white),
+                                ),
                         ),
                       ),
                     ],

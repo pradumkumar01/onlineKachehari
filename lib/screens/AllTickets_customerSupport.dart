@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_online_kachehari/provider/theme.dart';
+import 'package:flutter_online_kachehari/models/ticket_model.dart';
+import 'package:flutter_online_kachehari/services/ticket_service.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class AllticketsCustomersupport extends StatefulWidget {
   const AllticketsCustomersupport({super.key});
@@ -11,92 +14,8 @@ class AllticketsCustomersupport extends StatefulWidget {
 }
 
 class _AllticketsCustomersupportState extends State<AllticketsCustomersupport> {
-  final List<Map<String, String>> tickets = [
-    {
-      'title': 'Login Issue',
-      'description': 'Unable to login to the account. Error code: 403.',
-      'status': 'Pending'
-    },
-    {
-      'title': 'App Crash',
-      'description': 'The app crashes on startup. Please fix the issue ASAP.',
-      'status': 'Resolved'
-    },
-    {
-      'title': 'Payment Error',
-      'description':
-          'Payment processing error during checkout. Error code: 502.',
-      'status': 'In Progress'
-    },
-    {
-      'title': 'Profile Update Failure',
-      'description':
-          'Unable to update user profile details. Please investigate.',
-      'status': 'Pending'
-    },
-    {
-      'title': 'Notification Bug',
-      'description':
-          'Notifications are not being received even though they are enabled.',
-      'status': 'Resolved'
-    },
-    {
-      'title': 'Document Access Issue',
-      'description':
-          'Unable to access or download documents from the user dashboard.',
-      'status': 'In Progress'
-    },
-    {
-      'title': 'System Lag',
-      'description':
-          'System is lagging and performing slowly during peak hours.',
-      'status': 'Pending'
-    },
-    {
-      'title': 'Feedback Submission',
-      'description': 'General feedback on app performance and user experience.',
-      'status': 'Resolved'
-    },
-    {
-      'title': 'Password Reset Request',
-      'description':
-          'Request to reset the password not receiving email instructions.',
-      'status': 'In Progress'
-    },
-    {
-      'title': 'App Update Problem',
-      'description':
-          'Problems encountered while updating the app to the latest version.',
-      'status': 'Pending'
-    },
-    {
-      'title': 'Feature Request',
-      'description': 'Request for a new feature in the app – dark mode.',
-      'status': 'Resolved'
-    },
-    {
-      'title': 'Account Verification',
-      'description':
-          'Account verification email not received. Requesting support.',
-      'status': 'Pending'
-    },
-    {
-      'title': 'Error in Data Sync',
-      'description': 'Data synchronization issues between app and server.',
-      'status': 'In Progress'
-    },
-    {
-      'title': 'Subscription Issue',
-      'description': 'Problems with subscription renewal and payment.',
-      'status': 'Resolved'
-    },
-    {
-      'title': 'UI Glitch',
-      'description':
-          'Visual glitch in the user interface on the settings page.',
-      'status': 'Pending'
-    },
-  ];
+  final TicketService _ticketService = TicketService();
+  String _selectedFilter = 'All'; // All, Pending, In Progress, Resolved
 
   @override
   Widget build(BuildContext context) {
@@ -121,63 +40,307 @@ class _AllticketsCustomersupportState extends State<AllticketsCustomersupport> {
         flexibleSpace: Container(
           decoration: const BoxDecoration(color: Colors.deepPurple),
         ),
+        actions: [
+          // Filter dropdown
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.filter_list, color: Colors.white),
+            onSelected: (value) {
+              setState(() {
+                _selectedFilter = value;
+              });
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(value: 'All', child: Text('All')),
+              const PopupMenuItem(value: 'Pending', child: Text('Pending')),
+              const PopupMenuItem(
+                  value: 'In Progress', child: Text('In Progress')),
+              const PopupMenuItem(value: 'Resolved', child: Text('Resolved')),
+            ],
+          ),
+        ],
       ),
       body: Container(
         color: themeData.isDarkMode ? Colors.black : Colors.white,
-        child: ListView.separated(
-          itemCount: tickets.length,
-          separatorBuilder: (context, index) => Divider(
-            color: themeData.isDarkMode ? Colors.deepPurpleAccent : Colors.grey,
-          ),
-          itemBuilder: (context, index) {
-            final ticket = tickets[index];
-            final statusColor = ticket['status'] == 'Resolved'
-                ? Colors.green
-                : ticket['status'] == 'In Progress'
-                    ? Colors.orange
-                    : Colors.red;
+        child: StreamBuilder<List<TicketModel>>(
+          stream: _selectedFilter == 'All'
+              ? _ticketService.getUserTickets()
+              : _ticketService.getTicketsByStatus(_selectedFilter),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-            return Card(
-              margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              elevation: 5,
-              shadowColor: themeData.isDarkMode
-                  ? Colors.deepPurpleAccent
-                  : Colors.deepPurple,
-              child: ListTile(
-                contentPadding: const EdgeInsets.all(16),
-                leading: const Icon(
-                  Icons.rocket,
-                  size: 40,
-                  color: Colors.deepPurpleAccent,
-                ),
-                title: Text(
-                  ticket['title']!,
-                  style: const TextStyle(
-                    fontFamily: "serif",
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                subtitle: Text(
-                  ticket['description']!,
-                  style: const TextStyle(
-                    fontFamily: "serif",
-                    fontSize: 16,
-                  ),
-                ),
-                trailing: Chip(
-                  label: Text(
-                    ticket['status']!,
-                    style: const TextStyle(
-                      color: Colors.white,
+            if (snapshot.hasError) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.error_outline,
+                        size: 60, color: Colors.red),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Error loading tickets',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color:
+                            themeData.isDarkMode ? Colors.white : Colors.black,
+                      ),
                     ),
-                  ),
-                  backgroundColor: statusColor,
+                    const SizedBox(height: 8),
+                    Text(
+                      snapshot.error.toString(),
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                  ],
                 ),
+              );
+            }
+
+            final tickets = snapshot.data ?? [];
+
+            if (tickets.isEmpty) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.inbox_outlined,
+                        size: 80,
+                        color: themeData.isDarkMode
+                            ? Colors.white54
+                            : Colors.grey),
+                    const SizedBox(height: 16),
+                    Text(
+                      _selectedFilter == 'All'
+                          ? 'No tickets yet'
+                          : 'No $_selectedFilter tickets',
+                      style: TextStyle(
+                        fontSize: 20,
+                        color:
+                            themeData.isDarkMode ? Colors.white : Colors.black,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Your support tickets will appear here',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            return ListView.separated(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              itemCount: tickets.length,
+              separatorBuilder: (context, index) => Divider(
+                color: themeData.isDarkMode
+                    ? Colors.deepPurpleAccent
+                    : Colors.grey,
+                height: 1,
               ),
+              itemBuilder: (context, index) {
+                final ticket = tickets[index];
+                final statusColor = _getStatusColor(ticket.status);
+
+                return Card(
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  elevation: 5,
+                  shadowColor: themeData.isDarkMode
+                      ? Colors.deepPurpleAccent
+                      : Colors.deepPurple,
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.all(16),
+                    leading: Icon(
+                      _getStatusIcon(ticket.status),
+                      size: 40,
+                      color: statusColor,
+                    ),
+                    title: Text(
+                      ticket.title,
+                      style: const TextStyle(
+                        fontFamily: "serif",
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 4),
+                        Text(
+                          'Reason: ${ticket.reason}',
+                          style: const TextStyle(
+                            fontFamily: "serif",
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          ticket.message,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontFamily: "serif",
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Created: ${_formatDate(ticket.createdAt)}',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                    trailing: Chip(
+                      label: Text(
+                        ticket.status,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                        ),
+                      ),
+                      backgroundColor: statusColor,
+                    ),
+                    onTap: () => _showTicketDetails(context, ticket),
+                    onLongPress: () => _showDeleteConfirmation(context, ticket),
+                  ),
+                );
+              },
             );
           },
         ),
+      ),
+    );
+  }
+
+  Color _getStatusColor(String status) {
+    switch (status) {
+      case 'Resolved':
+        return Colors.green;
+      case 'In Progress':
+        return Colors.orange;
+      default:
+        return Colors.red;
+    }
+  }
+
+  IconData _getStatusIcon(String status) {
+    switch (status) {
+      case 'Resolved':
+        return Icons.check_circle;
+      case 'In Progress':
+        return Icons.hourglass_empty;
+      default:
+        return Icons.pending;
+    }
+  }
+
+  String _formatDate(DateTime date) {
+    return DateFormat('MMM dd, yyyy - hh:mm a').format(date);
+  }
+
+  void _showTicketDetails(BuildContext context, TicketModel ticket) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(ticket.title),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildDetailRow('Status', ticket.status),
+              const SizedBox(height: 8),
+              _buildDetailRow('Reason', ticket.reason),
+              const SizedBox(height: 8),
+              const Text(
+                'Message:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 4),
+              Text(ticket.message),
+              const SizedBox(height: 12),
+              _buildDetailRow('Created', _formatDate(ticket.createdAt)),
+              const SizedBox(height: 4),
+              _buildDetailRow('Updated', _formatDate(ticket.updatedAt)),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+          if (ticket.status != 'Resolved')
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _showDeleteConfirmation(context, ticket);
+              },
+              child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '$label: ',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        Expanded(child: Text(value)),
+      ],
+    );
+  }
+
+  void _showDeleteConfirmation(BuildContext context, TicketModel ticket) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Ticket'),
+        content: Text('Are you sure you want to delete "${ticket.title}"?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context);
+              try {
+                await _ticketService.deleteTicket(ticket.id);
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Ticket deleted successfully'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                }
+              } catch (e) {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(e.toString().replaceAll('Exception: ', '')),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              }
+            },
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
       ),
     );
   }

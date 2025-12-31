@@ -6,7 +6,6 @@ import 'package:flutter_online_kachehari/screens/UserProfile.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_online_kachehari/screens/HomePage.dart';
 import 'package:flutter_online_kachehari/screens/Notification.dart';
-import 'package:flutter_online_kachehari/services/InstagramReelsService.dart';
 import 'package:flutter_online_kachehari/services/NewsService.dart';
 import 'package:url_launcher/url_launcher.dart';
 
